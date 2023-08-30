@@ -25,6 +25,7 @@ const gitUpdate = async () => {
         await exec("git add .");
         await exec("git commit -m 'updated'");
         await exec("git push -u origin main");
+        console.log('1')
     } catch (error) {
         console.error("Ошибка при отправке обновления (git)", error);
     }
@@ -90,7 +91,7 @@ const deleteFolder = (folderPath) => {
 
 };
 
-
+/*
 createFolder();
 
 
@@ -125,8 +126,8 @@ setTimeout(() => {
     deleteFolder('./PDF');
     deleteFolder('./documentation/developer_manual');
 }, 85000);
-
+*/
 setTimeout(() =>{
     gitUpdate();
-}, 90000)
+}, 1000)
 
