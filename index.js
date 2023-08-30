@@ -2,7 +2,33 @@ const fs = require('fs');
 const { exec} = require('child_process');
 const { PDFDocument } = require('pdf-lib');
 const getFiles = require("./getFiles");
-const folderPath = '../documentation/developer_manual';
+const folderPath = './documentation/developer_manual';
+
+const fetchDocumentation = async () => {
+    try {
+        await exec(
+            "git clone https://github.com/nextcloud/documentation.git manual"
+        );
+        setTimeout(() => {
+             exec("mv manual/developer_manual documentation");
+             exec("rm -rf manual");
+        }, 50000);
+
+        console.log('Репозиторий клонирован')
+    } catch (error) {
+        console.error("Ошибка при клонирование репозитория:", error);
+    }
+};
+
+const gitUpdate = async () => {
+    try {
+        await exec("git add .");
+        await exec("git commit -m 'updated'");
+        await exec("git push -u origin main");
+    } catch (error) {
+        console.error("Ошибка при отправке обновления (git)", error);
+    }
+};
 
 const createFolder = () => {
     fs.mkdir('./PDF', { recursive: true }, (err) => {
@@ -13,6 +39,7 @@ const createFolder = () => {
 
         console.log('Папка успешно создана');
     });
+
 };
 const mergePdf = async (fileList) => {
 
@@ -59,28 +86,47 @@ const deleteFolder = (folderPath) => {
     } else {
         console.error(`Папка ${folderPath} не найдена`);
     }
+
+
 };
 
 
 createFolder();
-const rstFiles = getFiles(folderPath, [], '.rst');
 
 
 setTimeout(() => {
+    fetchDocumentation();
+}, 1000);
+
+
+
+setTimeout(() => {
+
+}, 60000);
+
+
+
+setTimeout(() => {
+    var rstFiles = getFiles(folderPath, [], '.rst');
     mergePdf(rstFiles).then(() => {
         console.log('PDF файлы успешно созданы');
     }).catch((error) => {
         console.log('Произошла ошибка при создании PDF файлов:', error);
     });
-}, 1000);
+}, 65000);
 
 setTimeout(() => {
     const pdfFiles = getFiles('./PDF', [], '.pdf')
     mergePdfFiles(pdfFiles, `./documentation/${new Date()}.pdf`);
-    console.log(pdfFiles)
-}, 12000);
+}, 80000);
 
 
 setTimeout(() => {
     deleteFolder('./PDF');
-}, 14000);
+    deleteFolder('./documentation/developer_manual');
+}, 85000);
+
+setTimeout(() =>{
+    gitUpdate();
+}, 90000)
+
